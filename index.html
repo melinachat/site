@@ -282,7 +282,7 @@
                     </div>
                 </div>
                 <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-                    Automatize o atendimento do seu WhatsApp, Instagram, Facebook e WebChat com respostas rápidas e humanizadas, para aumentar seus resultados.
+                    Conecte e deixe a IA fazer o trabalho: respostas instantâneas, conversas humanizadas e lucros multiplicados.
                 </p>
                 <a href="https://app.melinachat.com/admin/register" target="_blank" class="bg-emerald-500 text-white font-bold py-4 px-10 rounded-lg cta-button pulsing-cta text-lg inline-block">
                     EXPERIMENTE 7 DIAS GRÁTIS
@@ -720,10 +720,15 @@
                                 <!-- Channels Slider -->
                                 <div class="mb-8">
                                     <label class="font-bold text-slate-700 mb-3 block">2. Selecione a quantidade de canais:</label>
-                                    <div class="flex items-center gap-4">
-                                       <span class="text-lg font-bold text-slate-500" id="channels-min-value">1</span>
-                                        <input type="range" id="channels-slider" min="1" max="50" value="1" class="w-full">
-                                       <span class="text-lg font-bold text-slate-500" id="channels-max-value">50+</span>
+                                    <div class="relative pt-4">
+                                        <div id="slider-tooltip" class="absolute bottom-full mb-2 -translate-x-1/2 bg-slate-800 text-white text-xs font-bold py-1 px-3 rounded-md transition-opacity duration-300 opacity-0 pointer-events-none">
+                                            1
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                           <span class="text-lg font-bold text-slate-500" id="channels-min-value">1</span>
+                                            <input type="range" id="channels-slider" min="1" max="50" value="1" class="w-full">
+                                           <span class="text-lg font-bold text-slate-500" id="channels-max-value">50+</span>
+                                        </div>
                                     </div>
                                     <div class="text-center mt-2">
                                         <span id="channels-value" class="text-lg font-bold text-emerald-600">1</span>
@@ -742,11 +747,11 @@
                                 <!-- Moved "Seu Plano Inclui" here -->
                                 <div class="bg-slate-100 rounded-lg p-4 mb-6">
                                     <h4 class="font-bold text-lg text-slate-800 mb-2">Seu Plano Inclui:</h4>
-                                    <ul class="space-y-2 text-slate-600 text-sm">
+                                    <ul id="features-list" class="space-y-2 text-slate-600 text-sm">
                                         <!-- Features will be dynamically injected -->
                                     </ul>
                                 </div>
-                                <div id="summary-display" class="border-t border-slate-200 pt-6 space-y-3">
+                                <div id="summary-display" class="border-t border-slate-200 pt-4 space-y-2">
                                        <!-- Summary info will be injected here -->
                                 </div>
                             </div>
@@ -1118,17 +1123,38 @@
             const planDisplay = document.getElementById('plan-display');
             const summaryDisplay = document.getElementById('summary-display');
             const contractPlanButton = document.querySelector('#planos a.cta-button');
+            const sliderTooltip = document.getElementById('slider-tooltip');
 
             const plans = {
-                starter: { name: 'Starter', monthly: 297, color: 'text-emerald-500', icon: 'ph-rocket-launch', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Envios em Massa', '1 Atendente', '1 Departamento'] },
-                advanced: { name: 'Advanced', monthly: 397, color: 'text-blue-500', icon: 'ph-sparkle', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 5 Atendentes', 'Até 5 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks'] },
-                professional: { name: 'Professional', monthly: 497, color: 'text-purple-500', icon: 'ph-crown-simple', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 10 Atendentes', 'Até 10 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
-                business: { name: 'Business', monthly: 597, color: 'text-orange-500', icon: 'ph-briefcase', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 20 Atendentes', 'Até 20 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
-                scale: { name: 'Scale', monthly: 697, color: 'text-red-500', icon: 'ph-chart-line', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 30 Atendentes', 'Até 30 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] }
+                starter: { name: 'Starter', monthly: 397, color: 'text-emerald-500', icon: 'ph-rocket-launch', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Envios em Massa', '1 Atendente', '1 Departamento'] },
+                advanced: { name: 'Advanced', monthly: 497, color: 'text-blue-500', icon: 'ph-sparkle', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 5 Atendentes', 'Até 5 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks'] },
+                professional: { name: 'Professional', monthly: 597, color: 'text-purple-500', icon: 'ph-crown-simple', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 10 Atendentes', 'Até 10 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
+                business: { name: 'Business', monthly: 697, color: 'text-orange-500', icon: 'ph-briefcase', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 20 Atendentes', 'Até 20 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
+                scale: { name: 'Scale', monthly: 797, color: 'text-red-500', icon: 'ph-chart-line', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 30 Atendentes', 'Até 30 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] }
             };
 
             function formatCurrency(value) {
                 return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            }
+
+            function updateTooltip() {
+                const slider = channelsSlider;
+                const tooltip = sliderTooltip;
+                const value = slider.value;
+                const min = slider.min;
+                const max = slider.max;
+                const percent = (value - min) / (max - min);
+                
+                tooltip.textContent = value;
+
+                const sliderWidth = slider.offsetWidth;
+                const thumbWidth = 24; // from CSS
+                const trackWidth = sliderWidth - thumbWidth;
+                const thumbPosition = percent * trackWidth;
+                
+                const newLeft = thumbPosition + (thumbWidth / 2);
+
+                tooltip.style.left = `${newLeft}px`;
             }
 
             function calculatePrice() {
@@ -1155,7 +1181,7 @@
                         name: 'Enterprise', 
                         color: 'text-gray-700', 
                         icon: 'ph-buildings', 
-                        features: ['Todos os recursos do plano Scale', `${channels} Canais`, 'Suporte Prioritário', 'Gerente de Contas Dedicado'] 
+                        features: ['Todos os recursos do plano Scale', 'Suporte Prioritário', 'Gerente de Contas Dedicado'] 
                     };
                     
                     const baseMonthly = plans.scale.monthly;
@@ -1167,6 +1193,7 @@
                 }
                 
                 updateUI(selectedPlan, channels, totalPrice, isAnnual, isCustomEnterprise);
+                updateTooltip();
             }
 
             function updateUI(plan, channels, totalPrice, isAnnual, isCustomEnterprise) {
@@ -1202,23 +1229,27 @@
                 `;
 
                 // Update "Seu Plano Inclui" section
-                const featuresListElement = document.querySelector('.bg-slate-100.rounded-lg.p-4.mb-6 ul');
+                const featuresListElement = document.getElementById('features-list');
                 if (featuresListElement) {
-                    let featuresHtml = plan.features.map(feature => `
+                    let channelText = channels === 1 ? `${channels} Canal` : `${channels} Canais`;
+                    let featuresHtml = `
+                        <li class="flex items-center gap-2">
+                            <i class="ph-fill ph-check-circle ${isAnnual ? 'text-purple-500' : 'text-emerald-500'}"></i> ${channelText}
+                        </li>
+                    `;
+                    
+                    featuresHtml += plan.features.map(feature => `
                         <li class="flex items-center gap-2">
                             <i class="ph-fill ph-check-circle ${isAnnual ? 'text-purple-500' : 'text-emerald-500'}"></i> ${feature}
                         </li>
                     `).join('');
+                    
                     featuresListElement.innerHTML = featuresHtml;
                 }
 
                 // Update summary display
                 let summaryHtml = `
-                    <div class="flex justify-between items-center text-slate-600">
-                        <span>Canais Selecionados:</span>
-                        <span class="font-bold">${channels}</span>
-                    </div>
-                    <div class="flex justify-between items-center text-slate-800 text-2xl font-extrabold mt-4 border-t border-slate-200 pt-4">
+                    <div class="flex justify-between items-center text-slate-800 text-2xl font-extrabold">
                         <span>Total:</span>
                         <span class="gradient-text">${formatCurrency(totalPrice)}</span>
                     </div>
@@ -1270,6 +1301,10 @@
 
             if (channelsSlider) {
                 channelsSlider.addEventListener('input', calculatePrice);
+                channelsSlider.addEventListener('mousedown', () => sliderTooltip.classList.remove('opacity-0'));
+                channelsSlider.addEventListener('touchstart', () => sliderTooltip.classList.remove('opacity-0'));
+                channelsSlider.addEventListener('mouseup', () => sliderTooltip.classList.add('opacity-0'));
+                channelsSlider.addEventListener('touchend', () => sliderTooltip.classList.add('opacity-0'));
                 // Initial calculation
                 calculatePrice();
             }
