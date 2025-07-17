@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MelinaChat - Plataforma de Multi Atendimento com Inteligência Artificial</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB; /* bg-gray-50 */
+            color: #1F2937; /* text-gray-800 */
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #10B981, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-button {
+            background: linear-gradient(90deg, #10B981, #8B5CF6);
+            transition: all 0.3s ease;
+        }
+        .gradient-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.4);
+        }
+        .gradient-icon {
+            background: linear-gradient(90deg, #10B981, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent; /* Propriedade padrão */
+        }
+        .cta-button {
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        .feature-card, .faq-item {
+            background-color: #ffffff;
+            border: 1px solid #E5E7EB; /* border-gray-200 */
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .feature-card:hover, .faq-item:hover {
+            border-color: #10B981;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.07);
+        }
+        .feature-content, .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, margin-top 0.5s ease-in-out, padding-top 0.5s ease-in-out;
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .phone-mockup {
+            position: relative;
+            width: 300px;
+            height: 609px;
+            margin: 0 auto;
+        }
+        .phone-mockup iframe {
+            position: absolute;
+            top: 1.8%;
+            left: 3.5%;
+            width: 93%;
+            height: 96.5%;
+            border-radius: 30px;
+            border: none;
+        }
+        .phone-mockup .frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.imgur.com/AOHnZ6q.png'); 
+            background-size: contain;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .glow {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(60px);
+            opacity: 0.2;
+            animation: move-glow 20s infinite alternate;
+        }
+        @keyframes move-glow {
+            0% { transform: translate(-20%, 20%) scale(1); }
+            100% { transform: translate(20%, -20%) scale(1.2); }
+        }
+        @keyframes pulse-cta {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.25);
+            }
+            50% {
+                transform: scale(1.03);
+                box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            }
+        }
+        .pulsing-cta {
+            animation: pulse-cta 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+        .pulsing-cta:hover {
+            animation-play-state: paused;
+            transform: scale(1.03) translateY(-2px);
+            background-color: #34d399;
+            box-shadow: 0 0 25px 3px rgba(52, 211, 153, 0.6);
+        }
+        .plan-toggle button.active {
+            background-color: #10B981;
+            color: white;
+        }
+        .plan-toggle button.active.annual-purple {
+            background-color: #8B5CF6;
+        }
+        .comparison-card ul li {
+            @apply flex items-start gap-x-3;
+        }
+        .comparison-card ul li i {
+            @apply mt-1 flex-shrink-0;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #E5E7EB;
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-top: -8px;
+            background: var(--slider-thumb-color, #10B981);
+        }
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #E5E7EB;
+            border-radius: 5px;
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: var(--slider-thumb-color, #10B981);
+        }
+        .demo-glow-1 {
+            background-color: #8B5CF6;
+            width: 120px;
+            height: 120px;
+            top: 10%;
+            left: 5%;
+        }
+        .demo-glow-2 {
+            background-color: #10B981;
+            width: 150px;
+            height: 150px;
+            bottom: 15%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+        .ph-list, .ph-x {
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu-open .ph-list {
+            transform: rotate(90deg);
+        }
+        .mobile-menu-open .ph-x {
+            transform: rotate(0deg);
+        }
+        /* New Testimonial Styles */
+        .testimonial-card-v2 {
+            break-inside: avoid;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-slate-50/80 backdrop-blur-sm sticky top-0 z-50 border-b border-slate-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#">
+                <img src="https://i.imgur.com/s5219uu.png" alt="Logo MelinaChat" class="h-10">
+            </a>
+            <div class="hidden lg:flex items-center space-x-8 text-slate-700 font-medium">
+                <a href="#planos" class="hover:text-emerald-500 transition-colors">Planos</a>
+                <a href="#funcionalidades" class="hover:text-emerald-500 transition-colors">Funcionalidades</a>
+                <a href="#contato" class="hover:text-emerald-500 transition-colors">Contato</a>
+            </div>
+            <div class="hidden lg:flex items-center gap-4">
+                <a href="https://app.melinachat.com" class="border border-emerald-500 text-emerald-500 font-bold py-2 px-6 rounded-lg transition-colors hover:bg-emerald-500 hover:text-white">Login</a>
+                <a href="https://app.melinachat.com/admin/register" target="_blank" class="bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg cta-button">
+                    Começar Agora
+                </a>
+            </div>
+            <div class="lg:hidden">
+                <button id="mobile-menu-button" class="text-slate-800 focus:outline-none">
+                    <i class="ph ph-list text-3xl"></i>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden px-6 pb-4 bg-slate-50">
+            <a href="#planos" class="block py-2 text-slate-700 hover:text-emerald-500">Planos</a>
+            <a href="#funcionalidades" class="block py-2 text-slate-700 hover:text-emerald-500">Funcionalidades</a>
+            <a href="#contato" class="block py-2 text-slate-700 hover:text-emerald-500">Contato</a>
+            <hr class="my-2 border-slate-200">
+            <a href="https://app.melinachat.com/admin/register" target="_blank" class="block bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg text-center mb-2">Começar Agora</a>
+            <a href="https://app.melinachat.com" class="block border border-emerald-500 text-emerald-500 font-bold py-2 px-4 rounded-lg text-center">Login</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative text-center pt-20 pb-20 md:pt-32 md:pb-20 px-6 overflow-hidden">
+            <!-- Background Glows -->
+            <div class="absolute inset-0 z-0">
+                <div class="glow w-96 h-96 top-0 left-1/4 bg-green-300"></div>
+                <div class="glow w-80 h-80 top-1/2 left-1/3 bg-purple-300" style="animation-delay: 5s;"></div>
+                <div class="glow w-96 h-96 top-1/4 left-3/4 bg-blue-300" style="animation-delay: 10s;"></div>
+            </div>
+            
+            <div class="container mx-auto relative z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-4">
+                    Inteligência Artificial que <span class="gradient-text">atende e vende por você</span> 24h por dia.
+                </h1>
+                <div class="mt-8 mb-8 flex justify-center items-center space-x-2 sm:space-x-4 flex-wrap gap-y-4">
+                    <div class="flex items-center space-x-2 bg-white/50 py-2 px-4 rounded-full border border-slate-200">
+                        <i class="ph ph-whatsapp-logo text-green-500 text-2xl"></i>
+                        <span class="font-medium text-slate-700">WhatsApp</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-white/50 py-2 px-4 rounded-full border border-slate-200">
+                        <i class="ph ph-instagram-logo text-pink-500 text-2xl"></i>
+                        <span class="font-medium text-slate-700">Instagram</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-white/50 py-2 px-4 rounded-full border border-slate-200">
+                        <i class="ph ph-facebook-logo text-blue-500 text-2xl"></i>
+                        <span class="font-medium text-slate-700">Facebook</span>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-white/50 py-2 px-4 rounded-full border border-slate-200">
+                        <i class="ph ph-chat-circle-dots text-violet-500 text-2xl"></i>
+                        <span class="font-medium text-slate-700">WebChat</span>
+                    </div>
+                </div>
+                <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+                    Automatize o atendimento do seu WhatsApp, Instagram, Facebook e WebChat com respostas rápidas e humanizadas, para aumentar seus resultados.
+                </p>
+                <a href="https://app.melinachat.com/admin/register" target="_blank" class="bg-emerald-500 text-white font-bold py-4 px-10 rounded-lg cta-button pulsing-cta text-lg inline-block">
+                    EXPERIMENTE 7 DIAS GRÁTIS
+                </a>
+                <p class="mt-3 text-sm text-slate-500">Não precisa de cartão de crédito</p>
+            </div>
+        </section>
+
+        <!-- Video Demo Section -->
+        <section class="pt-10 pb-20 px-6">
+            <div class="container mx-auto flex flex-col lg:flex-row items-center justify-center lg:gap-x-8">
+                <!-- Left Content -->
+                <div class="lg:w-1/3 text-center lg:text-left mb-12 lg:mb-0">
+                    <blockquote class="border-l-4 border-red-400 bg-white p-4 rounded-r-lg shadow-sm inline-block lg:block">
+                        <p class="text-lg text-slate-600 font-semibold">Ninguém aguenta mais...</p>
+                    </blockquote>
+                    <div class="mt-4 space-y-2 flex flex-col items-center lg:items-start">
+                        <div class="bg-slate-200 text-slate-700 p-2 rounded-lg w-56 shadow-sm text-center">Digite 1 para Vendas</div>
+                        <div class="bg-slate-200 text-slate-700 p-2 rounded-lg w-56 lg:ml-4 shadow-sm text-center">Digite 2 para Suporte</div>
+                        <div class="bg-slate-200 text-slate-700 p-2 rounded-lg w-56 lg:ml-8 shadow-sm text-center">Digite 3 para Voltar</div>
+                    </div>
+                    <blockquote class="mt-6 border-l-4 border-emerald-400 bg-white p-4 rounded-r-lg shadow-sm inline-block lg:block">
+                        <p class="text-lg text-slate-600 font-semibold">Agora compare com a nossa IA: 
+                            <i class="ph ph-arrow-right text-2xl hidden lg:inline-block"></i>
+                            <i class="ph ph-arrow-down text-2xl inline-block lg:hidden"></i>
+                        </p>
+                    </blockquote>
+                </div>
+                
+                <!-- Right Content (Phone) -->
+                <div class="phone-mockup">
+                    <iframe 
+                        src="https://www.youtube.com/embed/Qcur2CydH_Q?autoplay=1&mute=1&loop=1&playlist=Qcur2CydH_Q&controls=0&showinfo=0&autohide=1" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                    <div class="frame"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nova Seção de Demonstração -->
+        <section id="demonstracao" class="relative py-20 px-6 bg-slate-100 overflow-hidden">
+            <!-- Background Glows for Demo Section -->
+            <div class="absolute inset-0 z-0">
+                <div class="glow demo-glow-1"></div>
+                <div class="glow demo-glow-2"></div>
+            </div>
+            <div class="container mx-auto relative z-10 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-8">Veja o Melina Chat em <span class="gradient-text">Ação!</span></h2>
+                <p class="text-slate-600 mt-2 max-w-2xl mx-auto mb-12">Assista a um tour completo pelo nosso sistema e descubra como ele pode transformar seu atendimento.</p>
+                <div class="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl aspect-video">
+                    <iframe
+                        class="absolute top-0 left-0 w-full h-full"
+                        src="https://www.youtube.com/embed/hFtkjMLzvEA?autoplay=0&controls=1&showinfo=0"
+                        title="Demonstração Melina Chat"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <a href="https://app.melinachat.com/admin/register" target="_blank" class="mt-12 inline-block text-white font-bold py-4 px-10 rounded-lg text-lg gradient-button">
+                    COMEÇAR AGORA!
+                </a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="funcionalidades" class="pb-20 px-6 bg-slate-100">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Tudo que você precisa para um atendimento de <span class="gradient-text">excelência</span></h2>
+                    <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Ferramentas poderosas para organizar, automatizar e analisar suas conversas.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                    <div class="space-y-4">
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-gauge gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Dashboard</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Visualize métricas importantes e o desempenho do seu atendimento em tempo real, tudo em um só lugar.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-chats-circle gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Conversas Unificadas</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Centralize todas as suas conversas do WhatsApp, Instagram e Facebook em uma única caixa de entrada, facilitando o gerenciamento e a resposta.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-users gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Contatos</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Gerencie sua lista de contatos, importe, exporte e veja o histórico de interações de cada cliente de forma organizada.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-paper-plane-tilt gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Envios em Massa</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Envie mensagens, promoções e novidades para múltiplos contatos de uma só vez, com segurança e personalização.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-calendar-check gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Agendamento de Mensagens</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Programe o envio de mensagens para datas e horários específicos. Ideal para campanhas, lembretes e felicitações.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-clock-counter-clockwise gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Recuperação de Conversa</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Nunca perca uma conversa. Recupere interações arquivadas ou perdidas para manter o histórico completo do cliente.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-columns gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">CRM - Kanban</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Visualize e gerencie seu funil de vendas com um sistema Kanban intuitivo. Mova clientes entre as etapas e organize seu processo comercial.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-chart-bar gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Relatórios</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Acesse relatórios detalhados sobre o desempenho do atendimento, tempo de resposta, volume de conversas e muito mais.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-gear-six gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Configurações</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Gerencie as configurações gerais da sua plataforma, desde permissões de utilizadores até integrações de sistema.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-code-simple gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">API / Integrações</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <ul class="space-y-2 text-slate-600 text-sm mt-3">
+                                        <li><i class="ph-fill ph-check-circle text-emerald-500 mr-2"></i> Integração com Google Agenda para agendamento automático</li>
+                                        <li><i class="ph-fill ph-check-circle text-emerald-500 mr-2"></i> Integração com Google Planilhas para maior controle dos leads</li>
+                                        <li><i class="ph-fill ph-check-circle text-emerald-500 mr-2"></i> Integração com Calendly Agendamentos</li>
+                                        <li><i class="ph-fill ph-check-circle text-emerald-500 mr-2"></i> API e Webhook</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-tag gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Tags / Rótulos</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Organize seus contactos com tags e rótulos personalizados para segmentação e automação eficientes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-buildings gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Departamentos</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Crie e gerencie diferentes departamentos para direcionar conversas e otimizar o fluxo de atendimento.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-user-circle gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Atendentes</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Adicione e gerencie os membros da sua equipa, atribuindo funções e acompanhando o desempenho individual.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-accordion rounded-xl">
+                            <div class="feature-card p-5 rounded-xl">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-lightning gradient-icon text-3xl"></i>
+                                        <h3 class="text-xl font-bold text-slate-800">Respostas Rápidas</h3>
+                                    </div>
+                                    <i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <p class="text-slate-600 text-sm">Crie e utilize respostas pré-definidas para agilizar o atendimento e manter a consistência na comunicação.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="resultados" class="py-20 px-6 bg-white overflow-hidden">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Veja os <span class="gradient-text">benefícios reais</span> do Melina Chat</h2>
+                </div>
+                <div id="results-carousel-container" class="relative">
+                    <div id="results-carousel" class="flex gap-6">
+                        <div class="result-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
+                            <div class="bg-slate-100 p-8 rounded-2xl shadow-lg text-center h-full"><p class="text-6xl font-extrabold gradient-text">+70%</p><h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Mais Produtividade</h3><p class="text-slate-600">Sua equipa foca no que importa enquanto o sistema cuida do resto.</p></div>
+                        </div>
+                        <div class="result-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
+                            <div class="bg-slate-100 p-8 rounded-2xl shadow-lg text-center h-full"><p class="text-6xl font-extrabold gradient-text">24/7</p><h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Atendimento Automático</h3><p class="text-slate-600">Chatbots atendem os seus clientes a qualquer hora, mesmo fora do expediente.</p></div>
+                        </div>
+                        <div class="result-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
+                            <div class="bg-slate-100 p-8 rounded-2xl shadow-lg text-center h-full"><p class="text-6xl font-extrabold gradient-text">+35%</p><h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Aumento nas Vendas</h3><p class="text-slate-600">Mais agilidade = mais conversões. Transforme conversas em faturação.</p></div>
+                        </div>
+                        <div class="result-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
+                            <div class="bg-slate-100 p-8 rounded-2xl shadow-lg text-center h-full"><p class="text-6xl font-extrabold gradient-text">100%</p><h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Centralização</h3><p class="text-slate-600">Gerencie WhatsApp, Instagram, Facebook e Webchat em um só lugar.</p></div>
+                        </div>
+                        <div class="result-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
+                            <div class="bg-slate-100 p-8 rounded-2xl shadow-lg text-center h-full"><p class="text-6xl font-extrabold gradient-text">80%</p><h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Redução de Custos</h3><p class="text-slate-600">Automatize tarefas e reduza drasticamente os seus custos operacionais.</p></div>
+                        </div>
+                        <!-- New Card 1 -->
+                        <div class="result-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
+                            <div class="bg-slate-100 p-8 rounded-2xl shadow-lg text-center h-full">
+                                <i class="ph-fill ph-users-three text-6xl gradient-text"></i>
+                                <h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Suporte Humanizado</h3>
+                                <p class="text-slate-600">Nossa IA entende o contexto e transfere para um atendente no momento certo, sem frustrar o cliente.</p>
+                            </div>
+                        </div>
+                        <!-- New Card 2 -->
+                        <div class="result-slide flex-shrink-0 w-full sm:w-1/2 lg:w-1/3">
+                            <div class="bg-slate-100 p-8 rounded-2xl shadow-lg text-center h-full">
+                                <i class="ph-fill ph-chart-line-up text-6xl gradient-text"></i>
+                                <h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Decisões Inteligentes</h3>
+                                <p class="text-slate-600">Acesse relatórios completos e entenda o comportamento do seu cliente para vender mais.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="prev-result" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white/50 p-2 rounded-full shadow-md text-slate-700 hover:bg-white transition-colors z-10"><i class="ph ph-caret-left text-2xl"></i></button>
+                    <button id="next-result" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white/50 p-2 rounded-full shadow-md text-slate-700 hover:bg-white transition-colors z-10"><i class="ph ph-caret-right text-2xl"></i></button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Comparison Section -->
+        <section id="comparacao" class="py-20 px-6 bg-slate-100">
+            <div class="container mx-auto max-w-5xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Chega de perder clientes! Veja a <span class="gradient-text">diferença</span>.</h2>
+                    <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Compare o atendimento tradicional com a automação inteligente do Melina Chat.</p>
+                </div>
+                <div class="flex gap-4 overflow-x-auto no-scrollbar md:grid md:grid-cols-2 md:gap-8 md:overflow-visible pb-4">
+                    <div class="comparison-card bg-white p-8 rounded-2xl shadow-lg border-t-4 border-red-400 w-10/12 flex-shrink-0 md:w-auto">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6">Atendimento Tradicional</h3>
+                        <ul class="space-y-4 text-slate-600">
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Atendimento lento e com filas de espera.</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Vendas limitadas ao horário comercial.</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Clientes sem resposta e oportunidades perdidas.</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Equipa sobrecarregada com perguntas repetitivas.</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Qualificação de leads manual e sem filtro.</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Histórico de conversas perdido em vários telemóveis.</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Envio manual de mensagens, um por um.</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Sem organização visual de clientes (CRM).</span></li>
+                            <li><i class="ph-fill ph-x-circle text-red-500 text-xl"></i> <span>Nenhuma métrica sobre o desempenho do atendimento.</span></li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card bg-white p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-400 w-10/12 flex-shrink-0 md:w-auto">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6">Com Melina Chat</h3>
+                        <ul class="space-y-4 text-slate-600">
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>Respostas instantâneas e automáticas, 24/7.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>A sua empresa a vender até de madrugada.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>100% dos seus contactos são atendidos na hora.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>Equipa focada em fechar vendas e em casos complexos.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>Qualificação e segmentação automática de leads.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>Histórico completo e unificado de cada cliente.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>Envios em massa com um clique.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>Funil de vendas visual com Kanban integrado.</span></li>
+                           <li><i class="ph-fill ph-check-circle text-emerald-500 text-xl"></i> <span>Relatórios completos para tomada de decisões.</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                     <a href="https://app.melinachat.com/admin/register" target="_blank" class="bg-emerald-500 text-white font-bold py-4 px-10 rounded-lg cta-button text-lg inline-block hover:bg-emerald-600">
+                        TESTAR 7 DIAS GRÁTIS
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Calculator Section (now Planos) -->
+        <section id="planos" class="py-20 px-6">
+            <div class="container mx-auto max-w-4xl">
+                   <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Calcule seu plano ideal</h2>
+                    <p class="text-slate-600 mt-2">Veja como o Melina Chat se adapta ao tamanho da sua operação.</p>
+                    <!-- Aviso sobre Canais (MODERNIZADO) -->
+                    <div class="bg-white border border-slate-200/80 rounded-2xl p-8 shadow-lg mt-8 w-full max-w-3xl mx-auto">
+                        <div class="text-center mb-6">
+                            <h3 class="text-xl font-bold tracking-wider uppercase text-slate-800">O que é um <span class="gradient-text">Canal</span>?</h3>
+                            <p class="text-md text-slate-500 mt-1">Cada plataforma conectada ao MelinaChat conta como um canal.</p>
+                        </div>
+                        <ul class="grid grid-cols-3 gap-4 text-center">
+                            <li class="bg-slate-50 p-4 rounded-lg flex flex-col items-center justify-center gap-1">
+                                <i class="ph ph-whatsapp-logo text-2xl text-green-500"></i>
+                                <span class="font-medium text-slate-700 text-xs">WhatsApp</span>
+                            </li>
+                             <li class="bg-slate-50 p-4 rounded-lg flex flex-col items-center justify-center gap-1">
+                                <i class="ph ph-whatsapp-logo text-2xl text-green-600"></i>
+                                <span class="font-medium text-slate-700 text-xs text-center">API Oficial</span>
+                            </li>
+                            <li class="bg-slate-50 p-4 rounded-lg flex flex-col items-center justify-center gap-1">
+                                <i class="ph ph-instagram-logo text-2xl text-pink-500"></i>
+                                <span class="font-medium text-slate-700 text-xs">Direct</span>
+                            </li>
+                            <li class="bg-slate-50 p-4 rounded-lg flex flex-col items-center justify-center gap-1">
+                                <i class="ph ph-instagram-logo text-2xl text-pink-400"></i>
+                                <span class="font-medium text-slate-700 text-xs">Comentários</span>
+                            </li>
+                            <li class="bg-slate-50 p-4 rounded-lg flex flex-col items-center justify-center gap-1">
+                                <i class="ph ph-facebook-logo text-2xl text-blue-600"></i>
+                                <span class="font-medium text-slate-700 text-xs">Messenger</span>
+                            </li>
+                            <li class="bg-slate-50 p-4 rounded-lg flex flex-col items-center justify-center gap-1">
+                                <i class="ph ph-chat-circle-dots text-2xl text-violet-500"></i>
+                                <span class="font-medium text-slate-700 text-xs">WebChat</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-2xl p-8 lg:p-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <!-- Left Side: Controls -->
+                        <div class="flex flex-col justify-between">
+                            <div>
+                                <!-- Billing Cycle Toggle -->
+                                <div class="mb-8">
+                                    <label class="font-bold text-slate-700 mb-3 block">1. Escolha o ciclo de pagamento:</label>
+                                    <div class="plan-toggle bg-slate-200 p-1 rounded-full flex items-center w-full md:w-fit">
+                                        <button id="monthly-btn-calc" class="w-full px-6 py-2 rounded-full text-sm font-semibold transition-colors active">Mensal</button>
+                                        <button id="annual-btn-calc" class="w-full px-6 py-2 rounded-full text-sm font-semibold transition-colors relative">
+                                            Anual 
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Channels Slider -->
+                                <div class="mb-8">
+                                    <label class="font-bold text-slate-700 mb-3 block">2. Selecione a quantidade de canais:</label>
+                                    <div class="flex items-center gap-4">
+                                       <span class="text-lg font-bold text-slate-500" id="channels-min-value">1</span>
+                                        <input type="range" id="channels-slider" min="1" max="50" value="1" class="w-full">
+                                       <span class="text-lg font-bold text-slate-500" id="channels-max-value">50+</span>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <span id="channels-value" class="text-lg font-bold text-emerald-600">1</span>
+                                        <span class="text-slate-600">canal(is)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Results -->
+                        <div class="bg-slate-50 rounded-2xl p-8 flex flex-col justify-between text-center lg:text-left">
+                            <div>
+                                <div id="plan-display" class="mb-6 transition-all duration-300">
+                                       <!-- Plan info will be injected here -->
+                                </div>
+                                <!-- Moved "Seu Plano Inclui" here -->
+                                <div class="bg-slate-100 rounded-lg p-4 mb-6">
+                                    <h4 class="font-bold text-lg text-slate-800 mb-2">Seu Plano Inclui:</h4>
+                                    <ul class="space-y-2 text-slate-600 text-sm">
+                                        <!-- Features will be dynamically injected -->
+                                    </ul>
+                                </div>
+                                <div id="summary-display" class="border-t border-slate-200 pt-6 space-y-3">
+                                       <!-- Summary info will be injected here -->
+                                </div>
+                            </div>
+                            <a href="https://app.melinachat.com/admin/register" target="_blank" class="mt-8 bg-emerald-500 text-white text-center font-bold py-4 px-10 rounded-lg cta-button text-lg w-full block">
+                                Contratar Plano
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Testimonials Section -->
+        <section id="depoimentos" class="py-20 px-6 bg-slate-100">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">O que nossos clientes <span class="gradient-text">dizem sobre nós</span></h2>
+                    <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Histórias de sucesso que impulsionam o seu negócio.</p>
+                </div>
+                <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-card-v2 bg-white p-8 rounded-2xl shadow-lg transform transition-transform hover:-translate-y-2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100">
+                                <i class="ph-fill ph-rocket-launch text-2xl text-emerald-500"></i>
+                            </span>
+                            <h3 class="text-xl font-bold text-slate-800">Atendimento Revolucionário</h3>
+                        </div>
+                        <p class="text-slate-600 mb-6">"O Melina Chat revolucionou nosso atendimento. Reduzimos o tempo de resposta em 80% e as vendas aumentaram significativamente. É como ter uma equipe de atendimento 24/7!"</p>
+                        <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
+                            <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/475569?text=AP" alt="Avatar de Ana Paula Silva">
+                            <div>
+                                <p class="font-bold text-slate-900">Ana Paula Silva</p>
+                                <p class="text-sm text-slate-500">Gerente de Vendas, TechSolutions</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-card-v2 bg-white p-8 rounded-2xl shadow-lg transform transition-transform hover:-translate-y-2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100">
+                                <i class="ph-fill ph-timer text-2xl text-purple-500"></i>
+                            </span>
+                            <h3 class="text-xl font-bold text-slate-800">Ativação em 30 segundos</h3>
+                        </div>
+                        <p class="text-slate-600 mb-6">"Do cadastro até a 1ª resposta foram 7 minutos. Zero desenvolvimento. Muito show!"</p>
+                        <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
+                            <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/475569?text=PA" alt="Avatar de Paula Almeida">
+                            <div>
+                                <p class="font-bold text-slate-900">Paula Almeida</p>
+                                <p class="text-sm text-slate-500">Clínica Sorriso</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 3 -->
+                    <div class="testimonial-card-v2 bg-white p-8 rounded-2xl shadow-lg transform transition-transform hover:-translate-y-2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100">
+                                <i class="ph-fill ph-kanban text-2xl text-blue-500"></i>
+                            </span>
+                            <h3 class="text-xl font-bold text-slate-800">CRM Intuitivo</h3>
+                        </div>
+                        <p class="text-slate-600 mb-6">"A funcionalidade de CRM Kanban é um divisor de águas! Conseguimos visualizar e gerenciar nossos leads de forma muito mais eficiente. A IA ainda ajuda a qualificar os contatos. Recomendo!"</p>
+                        <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
+                            <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/475569?text=MC" alt="Avatar de Mariana Costa">
+                            <div>
+                                <p class="font-bold text-slate-900">Mariana Costa</p>
+                                <p class="text-sm text-slate-500">Diretora Comercial, Soluções Integradas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 4 -->
+                    <div class="testimonial-card-v2 bg-white p-8 rounded-2xl shadow-lg transform transition-transform hover:-translate-y-2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100">
+                                <i class="ph-fill ph-lightning text-2xl text-yellow-500"></i>
+                            </span>
+                            <h3 class="text-xl font-bold text-slate-800">Respostas Instantâneas</h3>
+                        </div>
+                        <p class="text-slate-600 mb-6">"Nosso tempo médio de resposta caiu de 2 horas para 30 segundos e as vendas cresceram 38% no primeiro mês."</p>
+                        <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
+                            <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/475569?text=BC" alt="Avatar de Bruno Carvalho">
+                            <div>
+                                <p class="font-bold text-slate-900">Bruno Carvalho</p>
+                                <p class="text-sm text-slate-500">LojaFit</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 5 -->
+                    <div class="testimonial-card-v2 bg-white p-8 rounded-2xl shadow-lg transform transition-transform hover:-translate-y-2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-pink-100">
+                                <i class="ph-fill ph-strategy text-2xl text-pink-500"></i>
+                            </span>
+                            <h3 class="text-xl font-bold text-slate-800">Foco em Estratégia</h3>
+                        </div>
+                        <p class="text-slate-600 mb-6">"A automação do Instagram e Facebook nos poupou horas de trabalho manual. Agora podemos focar em estratégias, enquanto o Melina Chat cuida das interações iniciais. Simplesmente fantástico!"</p>
+                        <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
+                            <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/475569?text=JC" alt="Avatar de João Carlos Lima">
+                            <div>
+                                <p class="font-bold text-slate-900">João Carlos Lima</p>
+                                <p class="text-sm text-slate-500">Empreendedor Digital, JC Marketing</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 6 -->
+                    <div class="testimonial-card-v2 bg-white p-8 rounded-2xl shadow-lg transform transition-transform hover:-translate-y-2">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-gray-100">
+                                <i class="ph-fill ph-files text-2xl text-gray-500"></i>
+                            </span>
+                            <h3 class="text-xl font-bold text-slate-800">Tudo Centralizado</h3>
+                        </div>
+                        <p class="text-slate-600 mb-6">"A centralização das conversas em um só lugar é um alívio. Nunca mais perdemos mensagens e o agendamento de envios em massa é perfeito para nossas campanhas de marketing. Excelente ferramenta!"</p>
+                        <div class="flex items-center gap-4 border-t border-slate-200 pt-4">
+                            <img class="w-12 h-12 rounded-full object-cover" src="https://placehold.co/100x100/E2E8F0/475569?text=PH" alt="Avatar de Pedro Henrique Nunes">
+                            <div>
+                                <p class="font-bold text-slate-900">Pedro Henrique Nunes</p>
+                                <p class="text-sm text-slate-500">Coordenador de Marketing, InovaCom</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="text-center mt-12">
+                     <a href="https://app.melinachat.com/admin/register" target="_blank" class="text-white font-bold py-4 px-10 rounded-lg text-lg gradient-button inline-block">
+                        CADASTRAR
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-20 px-6 bg-white">
+            <div class="container mx-auto max-w-4xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Perguntas <span class="gradient-text">Frequentes</span></h2>
+                    <p class="text-slate-600 mt-2">Encontre aqui as respostas para as suas principais dúvidas.</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="faq-accordion"><div class="faq-item p-5 rounded-xl"><div class="flex justify-between items-center"><h3 class="text-lg font-semibold text-slate-800">Como o Melina Chat aumenta a satisfação dos meus clientes?</h3><i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform duration-300"></i></div><div class="faq-answer"><p class="text-slate-600 leading-relaxed pb-2">Nosso sistema com Inteligência Artificial oferece um atendimento personalizado e instantâneo no WhatsApp, 24 horas por dia. Isso significa que seus clientes são sempre atendidos rapidamente, melhorando a experiência e, consequentemente, impulsionando as vendas.</p></div></div></div>
+                    <div class="faq-accordion"><div class="faq-item p-5 rounded-xl"><div class="flex justify-between items-center"><h3 class="text-lg font-semibold text-slate-800">O que diferencia o Melina Chat da concorrência?</h3><i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform duration-300"></i></div><div class="faq-answer"><p class="text-slate-600 leading-relaxed pb-2">Diferente de sistemas comuns, nossa IA aprende com suas interações para se adaptar ao seu negócio, garantindo um atendimento mais eficaz e humanizado. A integração nativa com WhatsApp, Instagram e Facebook centraliza toda a sua comunicação em um só lugar.</p></div></div></div>
+                    <div class="faq-accordion"><div class="faq-item p-5 rounded-xl"><div class="flex justify-between items-center"><h3 class="text-lg font-semibold text-slate-800">A configuração da plataforma é complicada?</h3><i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform duration-300"></i></div><div class="faq-answer"><p class="text-slate-600 leading-relaxed pb-2">De forma alguma! Priorizamos a simplicidade. O Melina Chat foi projetado para ser configurado em poucos minutos, sem necessidade de conhecimento técnico. Além disso, nossa equipe de suporte está pronta para ajudar em cada etapa.</p></div></div></div>
+                    <div class="faq-accordion"><div class="faq-item p-5 rounded-xl"><div class="flex justify-between items-center"><h3 class="text-lg font-semibold text-slate-800">E se a IA não souber responder uma pergunta complexa?</h3><i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform duration-300"></i></div><div class="faq-answer"><p class="text-slate-600 leading-relaxed pb-2">Nossa Inteligência Artificial é treinada para identificar quando uma conversa precisa de um toque humano. Nesses casos, ela transfere o atendimento de forma inteligente e transparente para o atendente ou departamento correto, garantindo que o cliente nunca fique sem a resposta certa.</p></div></div></div>
+                    <div class="faq-accordion"><div class="faq-item p-5 rounded-xl"><div class="flex justify-between items-center"><h3 class="text-lg font-semibold text-slate-800">Consigo personalizar as respostas para seguir o tom de voz da minha marca?</h3><i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform duration-300"></i></div><div class="faq-answer"><p class="text-slate-600 leading-relaxed pb-2">Sim! O Melina Chat permite uma personalização completa das respostas automáticas. Você pode configurar a IA para interagir com seus clientes da mesma forma que sua equipe faria, mantendo a identidade e a consistência da sua marca.</p></div></div></div>
+                    <div class="faq-accordion"><div class="faq-item p-5 rounded-xl"><div class="flex justify-between items-center"><h3 class="text-lg font-semibold text-slate-800">A plataforma suporta o crescimento da minha empresa?</h3><i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform duration-300"></i></div><div class="faq-answer"><p class="text-slate-600 leading-relaxed pb-2">Com certeza. O Melina Chat é totalmente escalável. Seja você um empreendedor individual ou uma grande equipe, nossa plataforma se adapta às suas necessidades. Adicione ou remova atendentes e canais conforme seu negócio evolui.</p></div></div></div>
+                    <div class="faq-accordion"><div class="faq-item p-5 rounded-xl"><div class="flex justify-between items-center"><h3 class="text-lg font-semibold text-slate-800">Preciso assinar um contrato de longo prazo?</h3><i class="ph ph-plus-circle text-2xl text-emerald-500 transition-transform duration-300"></i></div><div class="faq-answer"><p class="text-slate-600 leading-relaxed pb-2">Não. Oferecemos planos mensais e anuais com total flexibilidade e sem fidelidade. Você pode escolher o que faz mais sentido para o seu momento e experimentar todo o potencial da nossa ferramenta sem compromissos de longo prazo.</p></div></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contato" class="py-20 px-6 bg-slate-100">
+            <div class="container mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Ficou com alguma <span class="gradient-text">dúvida</span>?</h2>
+                    <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Envie uma mensagem para nossa equipe. Responderemos o mais rápido possível.</p>
+                </div>
+
+                <div class="max-w-xl mx-auto bg-white border border-slate-200 rounded-2xl p-8 shadow-xl shadow-slate-200/50">
+                    <form id="contactForm" action="#" method="POST" novalidate>
+                        <div class="mb-4">
+                            <label for="name" class="block text-slate-700 mb-2 font-medium">Nome</label>
+                            <input type="text" id="name" name="name" class="w-full bg-slate-100 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-slate-700 mb-2 font-medium">Email</label>
+                            <input type="email" id="email" name="email" class="w-full bg-slate-100 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-slate-700 mb-2 font-medium">Mensagem</label>
+                            <textarea id="message" name="message" rows="4" class="w-full bg-slate-100 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                        </div>
+                        <div id="formError" class="text-red-500 text-sm mb-4 hidden"></div>
+                        <button type="button" id="openContactOptions" class="w-full bg-emerald-500 text-white font-bold py-3 px-6 rounded-lg cta-button flex items-center justify-center gap-2">
+                           <i class="ph ph-whatsapp-logo text-xl"></i>
+                           <span>Enviar Mensagem</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-slate-100 border-t border-slate-200">
+        <div class="container mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="https://i.imgur.com/s5219uu.png" alt="Logo MelinaChat" class="h-8">
+                <p class="text-slate-500 text-sm text-center md:text-left">&copy; 2025 MelinaChat. Todos os direitos reservados.</p>
+            </div>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="https://wa.me/5511983309754?text=Ol%C3%A1%2C%20estava%20no%20site%20https%3A%2F%2Fmelinachat.com" target="_blank" class="text-slate-400 hover:text-slate-600"><i class="ph-bold ph-whatsapp-logo text-2xl"></i></a>
+                <a href="https://instagram.com/melinachat.app" target="_blank" class="text-slate-400 hover:text-slate-600"><i class="ph-bold ph-instagram-logo text-2xl"></i></a>
+                <a href="https://www.youtube.com/@app.melinachat?sub_confirmation=1" target="_blank" class="text-slate-400 hover:text-slate-600"><i class="ph-bold ph-youtube-logo text-2xl"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Success Message Modal -->
+    <div id="successModal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden pointer-events-none opacity-0">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md transform scale-95 transition-transform duration-300 text-center shadow-2xl">
+            <button id="closeSuccessModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+            <i class="ph-fill ph-check-circle text-emerald-500 text-6xl mb-4"></i>
+            <h3 class="text-xl font-bold text-slate-800">Mensagem enviada com sucesso!</h3>
+        </div>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div id="floating-buttons" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 flex flex-col items-center gap-3 z-50 opacity-0 transition-opacity duration-1000">
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/5511983309754?text=Ol%C3%A1%2C%20estava%20no%20site%20https%3A%2F%2Fmelinachat.com" target="_blank" rel="noopener noreferrer" aria-label="Fale conosco no WhatsApp" class="bg-green-500 text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110">
+            <i class="ph ph-whatsapp-logo text-2xl md:text-3xl"></i>
+        </a>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica do Menu Mobile
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuIcon = mobileMenuButton.querySelector('i');
+
+            if (mobileMenuButton) {
+                const mobileLinks = mobileMenu.querySelectorAll('a');
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenuButton.classList.toggle('mobile-menu-open'); // Toggle class for icon animation
+
+                    if (mobileMenuButton.classList.contains('mobile-menu-open')) {
+                        mobileMenuIcon.classList.remove('ph-list');
+                        mobileMenuIcon.classList.add('ph-x');
+                    } else {
+                        mobileMenuIcon.classList.remove('ph-x');
+                        mobileMenuIcon.classList.add('ph-list');
+                    }
+                });
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuButton.classList.remove('mobile-menu-open'); // Reset class for icon
+                        mobileMenuIcon.classList.remove('ph-x');
+                        mobileMenuIcon.classList.add('ph-list');
+                    });
+                });
+            }
+
+            // Lógica do Acordeão
+            function setupAccordion(selector) {
+                const accordions = document.querySelectorAll(selector);
+                accordions.forEach(accordion => {
+                    const item = accordion.querySelector('.feature-card, .faq-item');
+                    if (!item) {
+                        console.warn(`Elemento correspondente a '.feature-card' ou '.faq-item' não encontrado no acordeão com o seletor '${selector}'. Ignorando a configuração do ouvinte de eventos.`);
+                        return;
+                    }
+                    const content = accordion.querySelector('.feature-content, .faq-answer');
+                    const icon = accordion.querySelector('.ph-plus-circle, .ph-minus-circle');
+
+                    item.addEventListener('click', () => {
+                        const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+                        document.querySelectorAll(selector).forEach(otherAccordion => {
+                            if (otherAccordion !== accordion) {
+                                const otherContent = otherAccordion.querySelector('.feature-content, .faq-answer');
+                                const otherIcon = otherAccordion.querySelector('.ph-plus-circle, .ph-minus-circle');
+                                otherContent.style.maxHeight = '0px';
+                                otherContent.style.paddingTop = '0';
+                                otherContent.style.marginTop = '0';
+                                if (otherIcon) {
+                                   otherIcon.classList.remove('ph-minus-circle', 'rotate-180');
+                                   otherIcon.classList.add('ph-plus-circle');
+                                }
+                            }
+                        });
+
+                        if (isOpen) {
+                            content.style.maxHeight = '0px';
+                            content.style.paddingTop = '0';
+                            content.style.marginTop = '0';
+                             if (icon) {
+                               icon.classList.remove('ph-minus-circle', 'rotate-180');
+                               icon.classList.add('ph-plus-circle');
+                            }
+                        } else {
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                            content.style.marginTop = '1rem';
+                            if(selector === '.faq-accordion') content.style.paddingTop = '0.5rem';
+                             if (icon) {
+                               icon.classList.remove('ph-plus-circle');
+                               icon.classList.add('ph-minus-circle', 'rotate-180');
+                            }
+                        }
+                    });
+                });
+            }
+
+            setupAccordion('.feature-accordion');
+            setupAccordion('.faq-accordion');
+            
+            // Lógica do Carrossel de Resultados (INFINITO)
+            const resultsContainer = document.getElementById('results-carousel-container');
+            if (resultsContainer) {
+                const slider = document.getElementById('results-carousel');
+                const prevBtn = document.getElementById('prev-result');
+                const nextBtn = document.getElementById('next-result');
+                let autoScrollInterval;
+
+                const stopAutoScroll = () => clearInterval(autoScrollInterval);
+                const startAutoScroll = () => {
+                    stopAutoScroll(); // Clear any existing interval
+                    autoScrollInterval = setInterval(() => handleNext(true), 3000);
+                };
+
+                const handleNext = (isAuto = false) => {
+                    if (!isAuto) stopAutoScroll();
+                    const firstSlide = slider.children[0];
+                    slider.style.transition = 'transform 0.5s ease-in-out';
+                    
+                    const slideWidth = firstSlide.offsetWidth;
+                    const gap = parseInt(window.getComputedStyle(slider).gap);
+                    slider.style.transform = `translateX(-${slideWidth + gap}px)`;
+
+                    const handleTransitionEnd = () => {
+                        slider.style.transition = 'none';
+                        slider.appendChild(firstSlide);
+                        slider.style.transform = 'translateX(0)';
+                        slider.removeEventListener('transitionend', handleTransitionEnd);
+                    };
+                    slider.addEventListener('transitionend', handleTransitionEnd);
+                };
+
+                const handlePrev = () => {
+                    stopAutoScroll();
+                    const lastSlide = slider.children[slider.children.length - 1];
+                    const slideWidth = lastSlide.offsetWidth;
+                    const gap = parseInt(window.getComputedStyle(slider).gap);
+
+                    slider.style.transition = 'none';
+                    slider.prepend(lastSlide);
+                    slider.style.transform = `translateX(-${slideWidth + gap}px)`;
+
+                    setTimeout(() => {
+                        slider.style.transition = 'transform 0.5s ease-in-out';
+                        slider.style.transform = 'translateX(0)';
+                    }, 10);
+                };
+
+                nextBtn.addEventListener('click', () => handleNext(false));
+                prevBtn.addEventListener('click', handlePrev);
+                
+                resultsContainer.addEventListener('mouseenter', stopAutoScroll);
+                resultsContainer.addEventListener('mouseleave', startAutoScroll);
+
+                startAutoScroll();
+            }
+            
+            // Lógica do Seletor de Planos
+            const monthlyBtnCalc = document.getElementById('monthly-btn-calc');
+            const annualBtnCalc = document.getElementById('annual-btn-calc');
+            const channelsSlider = document.getElementById('channels-slider');
+            const channelsValue = document.getElementById('channels-value');
+            const planDisplay = document.getElementById('plan-display');
+            const summaryDisplay = document.getElementById('summary-display');
+            const contractPlanButton = document.querySelector('#planos a.cta-button');
+
+            const plans = {
+                starter: { name: 'Starter', monthly: 297, color: 'text-emerald-500', icon: 'ph-rocket-launch', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Envios em Massa', '1 Atendente', '1 Departamento'] },
+                advanced: { name: 'Advanced', monthly: 397, color: 'text-blue-500', icon: 'ph-sparkle', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 5 Atendentes', 'Até 5 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks'] },
+                professional: { name: 'Professional', monthly: 497, color: 'text-purple-500', icon: 'ph-crown-simple', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 10 Atendentes', 'Até 10 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
+                business: { name: 'Business', monthly: 597, color: 'text-orange-500', icon: 'ph-briefcase', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 20 Atendentes', 'Até 20 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
+                scale: { name: 'Scale', monthly: 697, color: 'text-red-500', icon: 'ph-chart-line', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 30 Atendentes', 'Até 30 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] }
+            };
+
+            function formatCurrency(value) {
+                return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            }
+
+            function calculatePrice() {
+                const channels = parseInt(channelsSlider.value);
+                const isAnnual = annualBtnCalc.classList.contains('active');
+                
+                let selectedPlan;
+                let totalPrice;
+                let isCustomEnterprise = false;
+
+                if (channels <= 5) {
+                    if (channels === 1) selectedPlan = plans.starter;
+                    else if (channels === 2) selectedPlan = plans.advanced;
+                    else if (channels === 3) selectedPlan = plans.professional;
+                    else if (channels === 4) selectedPlan = plans.business;
+                    else if (channels === 5) selectedPlan = plans.scale;
+                    
+                    const monthlyPrice = selectedPlan.monthly;
+                    totalPrice = isAnnual ? monthlyPrice * 10 : monthlyPrice;
+
+                } else { // channels > 5
+                    isCustomEnterprise = true;
+                    selectedPlan = { 
+                        name: 'Enterprise', 
+                        color: 'text-gray-700', 
+                        icon: 'ph-buildings', 
+                        features: ['Todos os recursos do plano Scale', `${channels} Canais`, 'Suporte Prioritário', 'Gerente de Contas Dedicado'] 
+                    };
+                    
+                    const baseMonthly = plans.scale.monthly;
+                    const extraChannels = channels - 5;
+                    const extraCostMonthly = extraChannels * 100;
+                    
+                    const monthlyPrice = baseMonthly + extraCostMonthly;
+                    totalPrice = isAnnual ? monthlyPrice * 10 : monthlyPrice;
+                }
+                
+                updateUI(selectedPlan, channels, totalPrice, isAnnual, isCustomEnterprise);
+            }
+
+            function updateUI(plan, channels, totalPrice, isAnnual, isCustomEnterprise) {
+                // Update channels value text color
+                if (isAnnual) {
+                    channelsValue.classList.remove('text-emerald-600');
+                    channelsValue.classList.add('text-purple-500');
+                } else {
+                    channelsValue.classList.remove('text-purple-500');
+                    channelsValue.classList.add('text-emerald-600');
+                }
+                channelsValue.textContent = channels;
+                
+                // Update the annual button and slider thumb color
+                if (isAnnual) {
+                    annualBtnCalc.classList.add('annual-purple');
+                    annualBtnCalc.classList.remove('bg-slate-200', 'text-slate-700');
+                    monthlyBtnCalc.classList.remove('active'); // Ensure monthly is not active
+                    channelsSlider.style.setProperty('--slider-thumb-color', '#8B5CF6'); // Purple
+                } else {
+                    monthlyBtnCalc.classList.add('active'); // Ensure monthly is active
+                    annualBtnCalc.classList.remove('annual-purple');
+                    channelsSlider.style.setProperty('--slider-thumb-color', '#10B981'); // Emerald
+                }
+
+                // Update plan display
+                planDisplay.innerHTML = `
+                    <div class="flex items-center justify-center lg:justify-start gap-3 mb-2">
+                        <i class="ph-fill ${plan.icon} ${plan.color} text-3xl"></i>
+                        <p class="text-sm font-bold text-slate-500">Plano</p>
+                    </div>
+                    <p class="text-3xl font-bold text-slate-800">${plan.name}</p>
+                `;
+
+                // Update "Seu Plano Inclui" section
+                const featuresListElement = document.querySelector('.bg-slate-100.rounded-lg.p-4.mb-6 ul');
+                if (featuresListElement) {
+                    let featuresHtml = plan.features.map(feature => `
+                        <li class="flex items-center gap-2">
+                            <i class="ph-fill ph-check-circle ${isAnnual ? 'text-purple-500' : 'text-emerald-500'}"></i> ${feature}
+                        </li>
+                    `).join('');
+                    featuresListElement.innerHTML = featuresHtml;
+                }
+
+                // Update summary display
+                let summaryHtml = `
+                    <div class="flex justify-between items-center text-slate-600">
+                        <span>Canais Selecionados:</span>
+                        <span class="font-bold">${channels}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-slate-800 text-2xl font-extrabold mt-4 border-t border-slate-200 pt-4">
+                        <span>Total:</span>
+                        <span class="gradient-text">${formatCurrency(totalPrice)}</span>
+                    </div>
+                    <p class="text-right text-slate-500 text-sm">${isAnnual ? 'por ano <span class="text-emerald-500 font-bold">(Economize 2 meses)</span>' : 'por mês'}</p>
+                `;
+
+                if (isCustomEnterprise) {
+                    summaryHtml += `<p class="text-center text-blue-600 font-semibold text-sm mt-3">Para fechar este plano, fale com um consultor.</p>`;
+                }
+
+                summaryDisplay.innerHTML = summaryHtml;
+
+                // Update "Contratar Plano" button link and color
+                if (contractPlanButton) {
+                    let whatsappMessage;
+                    if (isCustomEnterprise) {
+                        whatsappMessage = `Olá, gostaria de falar sobre o plano Enterprise com ${channels} canais.`;
+                    } else {
+                        whatsappMessage = `Olá, gostaria de contratar o plano ${plan.name} com ${channels} canal(is) ativo.`;
+                    }
+                    const encodedMessage = encodeURIComponent(whatsappMessage);
+                    contractPlanButton.href = `https://wa.me/5511983309754?text=${encodedMessage}`;
+                    
+                    if (isAnnual) {
+                        contractPlanButton.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                        contractPlanButton.classList.add('bg-purple-500', 'hover:bg-purple-600');
+                    } else {
+                        contractPlanButton.classList.remove('bg-purple-500', 'hover:bg-purple-600');
+                        contractPlanButton.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+                    }
+                }
+            }
+
+            if (monthlyBtnCalc) {
+                monthlyBtnCalc.addEventListener('click', () => {
+                    monthlyBtnCalc.classList.add('active');
+                    annualBtnCalc.classList.remove('active');
+                    calculatePrice();
+                });
+            }
+
+            if (annualBtnCalc) {
+                annualBtnCalc.addEventListener('click', () => {
+                    annualBtnCalc.classList.add('active');
+                    monthlyBtnCalc.classList.remove('active');
+                    calculatePrice();
+                });
+            }
+
+            if (channelsSlider) {
+                channelsSlider.addEventListener('input', calculatePrice);
+                // Initial calculation
+                calculatePrice();
+            }
+            
+            // Lógica do Formulário de Contato e Modais (ATUALIZADO)
+            const contactForm = document.getElementById('contactForm');
+            const sendWhatsAppButton = document.getElementById('openContactOptions');
+            const formError = document.getElementById('formError');
+            
+            const successModal = document.getElementById('successModal');
+            const closeSuccessModalBtn = document.getElementById('closeSuccessModal');
+
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const messageInput = document.getElementById('message');
+
+            const whatsappNumber = '5511983309754';  
+            let successTimer;
+
+            function validateEmail(email) {
+                const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-1]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            function showModal(modal) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('pointer-events-none', 'opacity-0');
+                    modal.querySelector('div').classList.remove('scale-95');
+                }, 10);
+            }
+
+            function hideModal(modal) {
+                modal.classList.add('opacity-0');
+                modal.querySelector('div').classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden', 'pointer-events-none');
+                }, 300);
+            }
+
+            sendWhatsAppButton.addEventListener('click', () => {
+                formError.classList.add('hidden');
+                let errors = [];
+
+                if (nameInput.value.trim() === '') errors.push('O campo Nome é obrigatório.');
+                if (emailInput.value.trim() === '') errors.push('O campo Email é obrigatório.');
+                else if (!validateEmail(emailInput.value)) errors.push('Por favor, insira um e-mail válido.');
+                if (messageInput.value.trim() === '') errors.push('O campo Mensagem é obrigatório.');
+                
+                if (errors.length > 0) {
+                    formError.innerHTML = errors.join('<br>');
+                    formError.classList.remove('hidden');
+                } else {
+                    // Lógica para enviar direto para o WhatsApp
+                    const name = nameInput.value;
+                    const email = emailInput.value;
+                    const message = messageInput.value;
+                    const formattedMessage = `${message}\n\n*Nome*: ${name}\n*E-mail*: ${email}\n*Site*: https://melinachat.com`;
+                    const encodedMessage = encodeURIComponent(formattedMessage);
+                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                    
+                    window.open(whatsappUrl, '_blank');
+
+                    // Mostra a mensagem de sucesso
+                    showModal(successModal);
+                    contactForm.reset();
+                    successTimer = setTimeout(() => hideModal(successModal), 5000);
+                }
+            });
+
+            closeSuccessModalBtn.addEventListener('click', () => {
+                clearTimeout(successTimer);
+                hideModal(successModal);
+            });
+
+            // Floating buttons logic
+            setTimeout(() => {
+                const fabContainer = document.getElementById('floating-buttons');
+                if (fabContainer) {
+                    fabContainer.classList.remove('opacity-0');
+                }
+            }, 15000); // 15 seconds
+        });
+    </script>
+</body>
+</html>
