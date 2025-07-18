@@ -1126,11 +1126,11 @@
             const sliderTooltip = document.getElementById('slider-tooltip');
 
             const plans = {
-                starter: { name: 'Starter', monthly: 397, color: 'text-emerald-500', icon: 'ph-rocket-launch', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Envios em Massa', '1 Atendente', '1 Departamento'] },
-                advanced: { name: 'Advanced', monthly: 497, color: 'text-blue-500', icon: 'ph-sparkle', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 5 Atendentes', 'Até 5 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks'] },
-                professional: { name: 'Professional', monthly: 597, color: 'text-purple-500', icon: 'ph-crown-simple', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 10 Atendentes', 'Até 10 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
-                business: { name: 'Business', monthly: 697, color: 'text-orange-500', icon: 'ph-briefcase', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 20 Atendentes', 'Até 20 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
-                scale: { name: 'Scale', monthly: 797, color: 'text-red-500', icon: 'ph-chart-line', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 30 Atendentes', 'Até 30 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] }
+                starter: { name: 'Starter', monthly: 397, link: 'https://www.asaas.com/c/i04y3djfe1nw5ln0', color: 'text-emerald-500', icon: 'ph-rocket-launch', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Envios em Massa', '1 Atendente', '1 Departamento', 'CRM - Kanban'] },
+                advanced: { name: 'Advanced', monthly: 497, link: 'https://www.asaas.com/c/ulprj6xy2gsgh6a7', color: 'text-blue-500', icon: 'ph-sparkle', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 5 Atendentes', 'Até 5 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks'] },
+                professional: { name: 'Professional', monthly: 597, link: 'https://www.asaas.com/c/v22py1o7u5wscjab', color: 'text-purple-500', icon: 'ph-crown-simple', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 10 Atendentes', 'Até 10 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
+                business: { name: 'Business', monthly: 697, link: 'https://www.asaas.com/c/a29exwunjdc0kxtw', color: 'text-orange-500', icon: 'ph-briefcase', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 20 Atendentes', 'Até 20 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] },
+                scale: { name: 'Scale', monthly: 797, link: 'https://www.asaas.com/c/uwp2ebrit4k041oa', color: 'text-red-500', icon: 'ph-chart-line', features: ['Mensagens Ilimitadas', 'Contatos Ilimitados', 'Até 30 Atendentes', 'Até 30 Departamentos', 'Envios em Massa', 'CRM - Kanban', 'API e Webhooks', 'Criação conjunta da Base de Conhecimento'] }
             };
 
             function formatCurrency(value) {
@@ -1181,7 +1181,8 @@
                         name: 'Enterprise', 
                         color: 'text-gray-700', 
                         icon: 'ph-buildings', 
-                        features: ['Todos os recursos do plano Scale', 'Suporte Prioritário', 'Gerente de Contas Dedicado'] 
+                        features: ['Todos os recursos do plano Scale', 'Suporte Prioritário', 'Gerente de Contas Dedicado'],
+                        link: ''
                     };
                     
                     const baseMonthly = plans.scale.monthly;
@@ -1264,14 +1265,14 @@
 
                 // Update "Contratar Plano" button link and color
                 if (contractPlanButton) {
-                    let whatsappMessage;
+                    let finalLink;
                     if (isCustomEnterprise) {
-                        whatsappMessage = `Olá, gostaria de falar sobre o plano Enterprise com ${channels} canais.`;
+                        const whatsappMessage = `Olá, gostaria de falar sobre o plano Enterprise com ${channels} canais.`;
+                        finalLink = `https://wa.me/5511983309754?text=${encodeURIComponent(whatsappMessage)}`;
                     } else {
-                        whatsappMessage = `Olá, gostaria de contratar o plano ${plan.name} com ${channels} canal(is) ativo.`;
+                        finalLink = plan.link;
                     }
-                    const encodedMessage = encodeURIComponent(whatsappMessage);
-                    contractPlanButton.href = `https://wa.me/5511983309754?text=${encodedMessage}`;
+                    contractPlanButton.href = finalLink;
                     
                     if (isAnnual) {
                         contractPlanButton.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
